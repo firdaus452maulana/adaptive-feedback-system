@@ -1,0 +1,285 @@
+{
+    "user_personalization": {
+        "User Personalization": {
+            "User Identification": {
+                "Name": "Miyu_9",
+                "Age": 51,
+                "Gender": "Female",
+                "Height": 156,
+                "Weight": 68
+            },
+            "Discipline & Exercise Habits": {
+                "Weekly Frequency": "1 time",
+                "Duration": "30-60 minutes",
+                "Regular Schedule": "Yes",
+                "Consistency Difficulty": "Somewhat easy"
+            },
+            "Progress and Achievements": {
+                "Participated Structured Program": "Yes",
+                "Progress Result": "Very good",
+                "Greatest Achievement": "Lost 19 kg of weight in 2 months through consistent training"
+            },
+            "Intrinsic and Extrinsic Motivation": {
+                "Main Reason": [
+                    "To reduce stress or anxiety",
+                    "For physical appearance"
+                ],
+                "Motivation Type": "External rewards",
+                "Support Need": "Yes"
+            },
+            "Mental Health and Emotions": {
+                "Emotional State": "Bad",
+                "Stress Level": "Often",
+                "Exercise Helps Stress": "Yes"
+            },
+            "Social Support": {
+                "Supportive Friends/Family": "Yes",
+                "Training with Others": "Sometimes",
+                "Support Importance": "Not very important"
+            },
+            "Medical History and Physical Condition": {
+                "Injury History": "Minor injury",
+                "Current Medication": "Yes",
+                "Respiratory/Cardiovascular Issues": "Yes"
+            }
+        }
+    },
+    "squat_performance": {
+        "Squat Performance Analysis": [
+            {
+                "repetition": 0,
+                "state": "IMPROPER",
+                "feedback": [
+                    "Your knees are too low, making them closer to your toes",
+                    "Your back is not forward enough"
+                ]
+            },
+            {
+                "repetition": 1,
+                "state": "FAILED",
+                "feedback": [
+                    "Your back is not forward enough"
+                ]
+            },
+            {
+                "repetition": 2,
+                "state": "CORRECT",
+                "feedback": []
+            },
+            {
+                "repetition": 3,
+                "state": "FAILED",
+                "feedback": [
+                    "Your back is leaning too forward"
+                ]
+            },
+            {
+                "repetition": 4,
+                "state": "FAILED",
+                "feedback": [
+                    "Your knees are too low, making them closer to your toes",
+                    "Your back is leaning too forward"
+                ]
+            },
+            {
+                "repetition": 5,
+                "state": "CORRECT",
+                "feedback": []
+            },
+            {
+                "repetition": 6,
+                "state": "CORRECT",
+                "feedback": []
+            },
+            {
+                "repetition": 7,
+                "state": "CORRECT",
+                "feedback": []
+            },
+            {
+                "repetition": 8,
+                "state": "FAILED",
+                "feedback": [
+                    "Your knees are too low, making them closer to your toes"
+                ]
+            },
+            {
+                "repetition": 9,
+                "state": "IMPROPER",
+                "feedback": [
+                    "Your knees are too low, making them closer to your toes"
+                ]
+            }
+        ]
+    },
+    "feedback_history": [
+        {
+            "session": "s_001",
+            "date": "01/01/2025",
+            "performance": [
+                {
+                    "repetition": 0,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 1,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 2,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 3,
+                    "state": "FAILED",
+                    "feedback": [
+                        "Your back is not forward enough"
+                    ]
+                },
+                {
+                    "repetition": 4,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 5,
+                    "state": "IMPROPER",
+                    "feedback": [
+                        "Your back is leaning too forward"
+                    ]
+                },
+                {
+                    "repetition": 6,
+                    "state": "IMPROPER",
+                    "feedback": [
+                        "Your thighs drop too below your knees",
+                        "Your back is not forward enough"
+                    ]
+                },
+                {
+                    "repetition": 7,
+                    "state": "FAILED",
+                    "feedback": [
+                        "Your knees are too low, making them closer to your toes",
+                        "Your back is not forward enough"
+                    ]
+                }
+            ]
+        },
+        {
+            "session": "s_002",
+            "date": "03/01/2025",
+            "performance": [
+                {
+                    "repetition": 0,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 1,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 2,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 3,
+                    "state": "FAILED",
+                    "feedback": [
+                        "Your back is not forward enough"
+                    ]
+                },
+                {
+                    "repetition": 4,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 5,
+                    "state": "IMPROPER",
+                    "feedback": [
+                        "Your back is leaning too forward"
+                    ]
+                },
+                {
+                    "repetition": 6,
+                    "state": "IMPROPER",
+                    "feedback": [
+                        "Your thighs drop too below your knees",
+                        "Your back is not forward enough"
+                    ]
+                },
+                {
+                    "repetition": 7,
+                    "state": "FAILED",
+                    "feedback": [
+                        "Your knees are too low, making them closer to your toes",
+                        "Your back is not forward enough"
+                    ]
+                }
+            ]
+        },
+        {
+            "session": "s_003",
+            "date": "06/01/2025",
+            "performance": [
+                {
+                    "repetition": 0,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 1,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 2,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 3,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 4,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 5,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 6,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 7,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 8,
+                    "state": "CORRECT",
+                    "feedback": []
+                },
+                {
+                    "repetition": 9,
+                    "state": "CORRECT",
+                    "feedback": []
+                }
+            ]
+        }
+    ]
+}
