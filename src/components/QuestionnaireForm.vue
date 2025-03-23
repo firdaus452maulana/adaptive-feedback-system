@@ -18,7 +18,32 @@ const formData = ref({
 
 const rules = {
   multipleChoice: { required },
-  shortAnswer: { required, minLength: minLength(3) }
+  shortAnswer: { required, minLength: minLength(3) },
+  checkboxes: {
+    required,
+    minLength: minLength(1)
+  },
+  scale: { required },
+  multipleChoiceOther: {
+    requiredIfOther: (value: string) => ({
+      $validator: () =>
+        formData.value.multipleChoice !== 'Other' || !!value.trim(),
+      $message: 'Please specify your other choice',
+      $params: {
+        type: 'requiredIfOther'
+      }
+    })
+  },
+  checkboxOther: {
+    requiredIfOther: (value: string) => ({
+      $validator: () =>
+        !formData.value.checkboxes.includes('Other') || !!value.trim(),
+      $message: 'Please specify your other choices',
+      $params: {
+        type: 'requiredIfOther'
+      }
+    })
+  }
 }
 
 const v$ = useVuelidate(rules, formData)
@@ -56,18 +81,50 @@ const progress = computed(() => {
 
 const nextStep = async () => {
   isLoading.value = true
-  const result = await v$.value.$validate()
   
-  setTimeout(() => {
-    if (result) {
-      if (currentStep.value < questions.length - 1) {
-        currentStep.value++
-      } else {
-        isReviewing.value = true
+  // Validate only current step's required fields
+  const currentQuestion = questions[currentStep.value]
+  let isValid = true
+  
+  switch(currentQuestion.type) {
+    case 'multiple-choice':
+      await v$.value.multipleChoice.$validate()
+      if (formData.value.multipleChoice === 'Other') {
+        await v$.value.multipleChoiceOther.$validate()
+        isValid = !v$.value.multipleChoiceOther.$error
       }
+      isValid = isValid && !v$.value.multipleChoice.$error
+      break
+      
+    case 'checkbox':
+      await v$.value.checkboxes.$validate()
+      if (formData.value.checkboxes.includes('Other')) {
+        await v$.value.checkboxOther.$validate()
+        isValid = !v$.value.checkboxOther.$error
+      }
+      isValid = isValid && !v$.value.checkboxes.$error
+      break
+      
+    case 'scale':
+      await v$.value.scale.$validate()
+      isValid = !v$.value.scale.$error
+      break
+      
+    case 'short-answer':
+      await v$.value.shortAnswer.$validate()
+      isValid = !v$.value.shortAnswer.$error
+      break
+  }
+
+  if (isValid) {
+    if (currentStep.value < questions.length - 1) {
+      currentStep.value++
+    } else {
+      isReviewing.value = true
     }
-    isLoading.value = false
-  }, 300)
+  }
+  
+  isLoading.value = false
 }
 
 const prevStep = () => {
