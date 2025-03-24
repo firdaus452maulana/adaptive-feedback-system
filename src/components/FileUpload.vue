@@ -18,7 +18,7 @@ const handleFileUpload = async (event: Event) => {
     const formData = new FormData()
     formData.append('file', file)
 
-    const response = await fetch('/api/upload', {
+    const response = await fetch('/api/', {
       method: 'POST',
       body: formData
     })
@@ -44,7 +44,7 @@ const handleFileUpload = async (event: Event) => {
         type="file"
         ref="fileInput"
         @change="handleFileUpload"
-        accept=".json"
+        accept=".json, .txt"
         class="form-control"
       >
       <p v-if="uploadStatus" :class="['status-message', { 'error': uploadStatus.includes('failed') }]">
