@@ -101,10 +101,45 @@
       </div>
       
       <hr class="section-divider">
-</div>
+      
+      <!-- Feedback Questionnaire CTA -->
+      <div class="questionnaire-cta">
+        <button
+          class="cta-button"
+          @click="showModal = true"
+          aria-label="Provide additional feedback"
+        >
+          Share Your Experience
+        </button>
+      </div>
+    </div>
 
-</div>
+    <FeedbackModal
+      v-model:show="showModal"
+      @submit-success="submissionComplete = true"
+    />
+
+    <Transition name="toast">
+      <div
+        v-if="submissionComplete"
+        class="success-toast"
+        role="alert"
+        aria-live="polite"
+      >
+        <i class="fas fa-check-circle"></i>
+        Thank you for your feedback!
+      </div>
+    </Transition>
+  </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import FeedbackModal from './FeedbackModal.vue'
+
+const showModal = ref(false)
+const submissionComplete = ref(false)
+</script>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
@@ -209,7 +244,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .combined-feedback {
   max-width: 1200px;
   margin: 2rem auto;
@@ -401,5 +436,56 @@ export default defineComponent({
   height: 2px;
   background: #000000;
   margin: 2rem 0;
+}
+
+.questionnaire-cta {
+  text-align: center;
+  margin: 3rem 0;
+  
+  .cta-button {
+    background-color: #F0A04B;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 2rem;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+      background-color: #e0903b;
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+.success-toast {
+  position: fixed;
+  bottom: 2rem;
+  background: #B1C29E;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.toast-enter-active,
+.toast-leave-active {
+  transition: all 0.3s ease;
+}
+
+.toast-enter-from,
+.toast-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
 }
 </style>
