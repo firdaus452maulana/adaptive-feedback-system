@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import QuestionnaireForm from '../components/QuestionnaireForm.vue'
+import MultiQuestionnaireForm from '../components/MultiQuestionnaireForm.vue'
 
 const route = useRoute()
 console.log('Questionnaire slug:', route.params.slug)
@@ -8,7 +8,7 @@ console.log('Questionnaire slug:', route.params.slug)
 
 <template>
   <div class="questionnaire-page">
-    <QuestionnaireForm />
+    <MultiQuestionnaireForm />
   </div>
 </template>
 

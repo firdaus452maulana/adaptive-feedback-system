@@ -11,35 +11,29 @@ const props = defineProps<{
     minLabel?: string
     maxLabel?: string
   }>
-  answers: {
-    multipleChoice: string
-    multipleChoiceOther: string
-    checkboxes: string[]
-    checkboxOther: string
-    scale: number
-    shortAnswer: string
-  }
+  answers: Record<string, any>
 }>()
 
 const emit = defineEmits(['editQuestion'])
 
 const getFormattedAnswer = (type: string, index: number) => {
+  const answer = props.answers[`q${index}`]
+  if (!answer) return ''
+
   switch (type) {
     case 'multiple-choice':
-      return props.answers.multipleChoice === 'Other'
-        ? props.answers.multipleChoiceOther
-        : props.answers.multipleChoice
+      return answer.value === 'Other' ? answer.otherValue : answer.value
     case 'checkbox':
-      const answers = [...props.answers.checkboxes]
+      const answers = [...answer.values]
       if (answers.includes('Other')) {
         answers.splice(answers.indexOf('Other'), 1)
-        answers.push(props.answers.checkboxOther)
+        answers.push(answer.otherValue)
       }
       return answers.join(', ')
     case 'scale':
-      return `${props.answers.scale} / 7`
+      return `${answer.value}`
     case 'short-answer':
-      return props.answers.shortAnswer
+      return answer.value
     default:
       return ''
   }
