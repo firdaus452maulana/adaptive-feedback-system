@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
 import QuestionnaireForm from '../components/QuestionnaireForm.vue'
+
+const route = useRoute()
+console.log('Questionnaire slug:', route.params.slug)
 </script>
 
 <template>

@@ -135,7 +135,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import FeedbackModal from './FeedbackModal.vue'
+
+const route = useRoute()
+console.log('Feedback slug:', route.params.slug)
 
 const showModal = ref(false)
 const submissionComplete = ref(false)

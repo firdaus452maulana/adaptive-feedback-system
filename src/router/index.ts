@@ -13,9 +13,10 @@ const router = createRouter({
       component: Home
     },
     {
-      path: '/questionnaire',
+      path: '/questionnaire/:slug',
       name: 'Questionnaire',
-      component: Questionnaire
+      component: Questionnaire,
+      props: true
     },
     {
       path: '/results',
@@ -23,9 +24,10 @@ const router = createRouter({
       component: Results
     },
     {
-      path: '/feedback',
+      path: '/feedback/:slug',
       name: 'Feedback',
-      component: CombinedFeedback
+      component: CombinedFeedback,
+      props: true
     }
   ]
 })
