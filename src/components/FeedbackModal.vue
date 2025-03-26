@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
-import { required, email, minLength } from '@vuelidate/validators'
+import { required, minLength } from '@vuelidate/validators'
 
 const props = defineProps<{
   show: boolean
@@ -10,34 +11,147 @@ const props = defineProps<{
 const emit = defineEmits(['update:show', 'submit-success'])
 
 const formData = ref({
-  rating: null as number | null,
-  comment: '',
-  email: ''
+  ratings: {} as Record<string, number | null>,
+  comment: ''
 })
 
 const rules = {
-  rating: { required },
-  comment: { required, minLength: minLength(10) },
-  email: { email }
+  ratings: {
+    $each: {
+      required
+    }
+  }
 }
 
 const v$ = useVuelidate(rules, formData)
+console.log(v$.ratings)
 
-const questions = [
-  {
+const route = useRoute()
+
+const questionnaireA = [
+    {
+      "type_question": "performance_data_relevance",
+      "statement": "This motivational message reflects my achievements and challenges based on my performance data.",
+      "min_value": 1,
+      "min_label": "Strongly Disagree",
+      "max_value": 7,
+      "max_label": "Strongly Agree",
+      "reason": "This item measures how well the message aligns with performance reality, following the feedback principles used in motivation enhancement (Deci & Ryan, 2000)."
+    },
+    {
+      "type_question": "message_clarity",
+      "statement": "The message I received clearly conveys information about my performance.",
+      "min_value": 1,
+      "min_label": "Strongly Disagree",
+      "max_value": 7,
+      "max_label": "Strongly Agree",
+      "reason": "Message clarity is a crucial factor in ensuring that the message is understood and internalized (Guay et al., 2000)."
+    },
+    {
+      "type_question": "emotional_impact",
+      "statement": "After reading this message, I feel motivated to improve my performance.",
+      "min_value": 1,
+      "min_label": "Strongly Disagree",
+      "max_value": 7,
+      "max_label": "Strongly Agree",
+      "reason": "Measuring emotional impact is related to increasing intrinsic motivation, which is essential for sustainable performance (Deci & Ryan, 2000)."
+    },
+    {
+      "type_question": "actionability",
+      "statement": "This message provides clear guidance on actions I can take to improve my performance.",
+      "min_value": 1,
+      "min_label": "Strongly Disagree",
+      "max_value": 7,
+      "max_label": "Strongly Agree",
+      "reason": "Assessing whether the message inspires direct behavioral change is a key aspect of evaluating the effectiveness of motivational messages (Guay et al., 2000)."
+    },
+    {
+      "type_question": "overall_satisfaction",
+      "statement": "Overall, I am satisfied with the motivational message based on my performance data.",
+      "min_value": 1,
+      "min_label": "Strongly Disagree",
+      "max_value": 7,
+      "max_label": "Strongly Agree",
+      "reason": "Overall satisfaction is a frequently used indicator in evaluating motivational interventions (Deci & Ryan, 2000)."
+    }
+  ];
+
+const questionnaireB = [
+    {
+      "type_question": "integrated_relevance",
+      "statement": "This motivational message is relevant to my performance and also considers my personal characteristics and preferences.",
+      "min_value": 1,
+      "min_label": "Strongly Disagree",
+      "max_value": 7,
+      "max_label": "Strongly Agree",
+      "reason": "This item measures how the message integrates performance and personalization data, following the personalized approach proposed in international research (e.g., Hajarian et al., 2019)."
+    },
+    {
+      "type_question": "personalization_quality",
+      "statement": "This message feels specifically tailored to me based on my personal data and performance.",
+      "min_value": 1,
+      "min_label": "Strongly Disagree",
+      "max_value": 7,
+      "max_label": "Strongly Agree",
+      "reason": "Measuring perceived personalization is essential as research shows that personalized interventions can increase intrinsic motivation (Deci & Ryan, 2000)."
+    },
+    {
+      "type_question": "integration_clarity",
+      "statement": "The message I received presents information about performance and personalization data in a clear and understandable way.",
+      "min_value": 1,
+      "min_label": "Strongly Disagree",
+      "max_value": 7,
+      "max_label": "Strongly Agree",
+      "reason": "Clarity in integrating both types of data is crucial to ensure that the message is not confusing and is positively received (Guay et al., 2000)."
+    },
+    {
+      "type_question": "emotional_impact_and_motivation",
+      "statement": "After reading this message, I feel highly motivated to make the necessary improvements.",
+      "min_value": 1,
+      "min_label": "Strongly Disagree",
+      "max_value": 7,
+      "max_label": "Strongly Agree",
+      "reason": "This item assesses the emotional effects of personalized messages, where increased intrinsic motivation is expected when the message reflects the participant's personal condition (Deci & Ryan, 2000)."
+    },
+    {
+      "type_question": "actionability_and_recommendations",
+      "statement": "This message provides concrete recommendations that I can apply to improve my performance.",
+      "min_value": 1,
+      "min_label": "Strongly Disagree",
+      "max_value": 7,
+      "max_label": "Strongly Agree",
+      "reason": "Assessing actionability is a crucial step in evaluating the practical impact of motivational messages (Guay et al., 2000)."
+    },
+    {
+      "type_question": "overall_satisfaction",
+      "statement": "Overall, I am satisfied with the motivational message that combines my performance data and personalization.",
+      "min_value": 1,
+      "min_label": "Strongly Disagree",
+      "max_value": 7,
+      "max_label": "Strongly Agree",
+      "reason": "Overall satisfaction is an indicator that reflects the acceptance and effectiveness of more complex motivational interventions (Deci & Ryan, 2000)."
+    }
+  ];
+
+const questions = computed(() => {
+  const questionnaire = route.query.type === 'performance_personalization'
+    ? questionnaireB
+    : questionnaireA
+
+  return questionnaire.map(item => ({
     type: 'rating',
-    question: 'How would you rate your experience?',
-    min: 1,
-    max: 5
-  },
-  {
-    type: 'comment',
-    question: 'What could we improve?'
-  }
-]
+    question: item.statement,
+    min: item.min_value,
+    max: item.max_value,
+    minLabel: item.min_label,
+    maxLabel: item.max_label,
+    type_question: item.type_question
+  }))
+})
 
 const isValid = computed(() => {
-  return !v$.value.$invalid
+  // Check all rating questions have values through Vuelidate
+  return !v$.value.ratings.$invalid
 })
 
 const handleClose = () => {
@@ -53,6 +167,16 @@ const handleBackdropClick = (event: MouseEvent) => {
 const submitForm = async () => {
   const isValid = await v$.value.$validate()
   if (isValid) {
+    // Transform form data to requested format
+    const result = questions.value.reduce((acc, question) => {
+      acc[question.type_question] = {
+        statement: question.question,
+        ratings: formData.value.ratings[question.type_question]
+      }
+      return acc
+    }, {} as Record<string, { statement: string, ratings: number | null }>)
+
+    console.log(result)
     emit('submit-success')
     handleClose()
   }
@@ -105,19 +229,25 @@ const handleKeydown = (event: KeyboardEvent) => {
           >
             <h3>{{ question.question }}</h3>
             
-            <div v-if="question.type === 'rating'" class="rating-grid">
-              <button
-                v-for="n in 5"
-                :key="n"
-                :class="['rating-button', { 'selected': formData.rating === n }]"
-                @click="formData.rating = n"
-                :aria-label="`Rate ${n} out of 5`"
-              >
-                {{ n }}
-              </button>
+            <div v-if="question.type === 'rating'" class="rating-container">
+              <div class="rating-labels">
+                <span>{{ question.minLabel }}</span>
+                <span>{{ question.maxLabel }}</span>
+              </div>
+              <div class="rating-grid">
+                <button
+                  v-for="n in question.max"
+                  :key="n"
+                  :class="['rating-button', { 'selected': formData.ratings[question.type_question] === n }]"
+                  @click="formData.ratings[question.type_question] = n"
+                  :aria-label="`Rate ${n} out of ${question.max}`"
+                >
+                  {{ n }}
+                </button>
+              </div>
             </div>
 
-            <textarea
+            <!-- <textarea
               v-if="question.type === 'comment'"
               v-model="formData.comment"
               class="comment-input"
@@ -131,21 +261,9 @@ const handleKeydown = (event: KeyboardEvent) => {
               class="error-message"
             >
               Please provide at least 10 characters
-            </div>
+            </div> -->
           </div>
 
-          <div class="email-field">
-            <input
-              type="email"
-              v-model="formData.email"
-              placeholder="Optional: Enter email for follow-up"
-              class="email-input"
-              aria-label="Email for follow-up"
-            >
-            <div v-if="v$.email.$error" class="error-message">
-              Please enter a valid email address
-            </div>
-          </div>
         </div>
 
         <div class="modal-footer">
@@ -245,30 +363,44 @@ const handleKeydown = (event: KeyboardEvent) => {
       }
     }
 
-    .rating-grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(5, 1fr);
+    .rating-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
 
-      .rating-button {
-        padding: 0.8rem;
-        border: 2px solid #B1C29E;
-        border-radius: 8px;
-        background: white;
+      .rating-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
         color: #666;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.2s ease;
+      }
 
-        &.selected {
-          background: #B1C29E;
-          color: white;
-          transform: scale(1.05);
-        }
+      .rating-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
 
-        &:hover {
-          transform: scale(1.05);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .rating-button {
+          padding: 0.8rem;
+          border: 2px solid #B1C29E;
+          border-radius: 8px;
+          background: white;
+          color: #666;
+          font-weight: bold;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          text-align: center;
+
+          &.selected {
+            background: #B1C29E;
+            color: white;
+            transform: scale(1.05);
+          }
+
+          &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
         }
       }
     }
@@ -331,7 +463,7 @@ const handleKeydown = (event: KeyboardEvent) => {
   .modal-container {
     width: 95%;
     
-    .rating-grid {
+    .rating-container .rating-grid {
       grid-template-columns: repeat(3, 1fr);
     }
   }
