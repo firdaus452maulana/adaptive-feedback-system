@@ -1,24 +1,13 @@
 <template>
   <div class="container combined-feedback">
-    <div class="upload-section card p-4 mb-5">
-      <h2 class="mb-4">Upload Exercise Video</h2>
-      <form @submit.prevent="handleSubmit" class="upload-form">
-        <div class="custom-file mb-3">
-          <input 
-            type="file" 
-            class="custom-file-input"
-            id="exerciseVideo"
-            accept=".json,.txt"
-            @change="handleFileChange"
-          >
-          <label class="custom-file-label" for="exerciseVideo">
-            {{ selectedFile ? selectedFile.name : 'Choose file...' }}
-          </label>
-        </div>
-        <button type="submit" class="btn btn-primary btn-lg">
-          Analyze Movement
-        </button>
-      </form>
+    <div v-if="isLoadingAnalysis" class="loading-overlay">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    
+    <div v-if="analysisError" class="error-message alert alert-danger">
+      {{ analysisError }}
     </div>
 
     <div v-if="feedbackData" class="feedback-results">
@@ -26,7 +15,7 @@
       
       <div v-for="(item, index) in feedbackData" :key="index" class="repetition-group">
         <div class="repetition-header" :class="headerClass(item.state)">
-          <h4>Repetition {{ item.repetition + 1 }}</h4>
+          <h4>Repetition {{ item.repetition }}</h4>
           <span class="status-badge">{{ item.state }}</span>
         </div>
 
@@ -139,7 +128,8 @@ import { useRoute } from 'vue-router'
 import FeedbackModal from './FeedbackModal.vue'
 
 const route = useRoute()
-console.log('Feedback slug:', route.params.slug)
+console.log('Feedback slug:', route.params.exerciseId)
+console.log('Feedback slug:', route.query.type)
 
 const showModal = ref(false)
 const submissionComplete = ref(false)
@@ -153,10 +143,9 @@ export default defineComponent({
   watch: {
     feedbackData(newVal) {
       if (newVal && newVal.length > 0) {
-        // Extract exercise ID from feedback data or use a placeholder
-        const userId = newVal[0].user_id || 'default-user';
-        const type = newVal[0].exercise_type || 'default-type';
-        this.fetchMotivation(userId);
+        const exerciseId = this.$route.params.exerciseId;
+        const type = this.$route.query.type;
+        this.fetchMotivation(exerciseId, type);
       }
     }
   },
@@ -165,32 +154,49 @@ export default defineComponent({
       selectedFile: null as File|null,
       feedbackData: null as any,
       motivationData: null as any,
+      isLoadingAnalysis: false,
       isLoadingMotivation: false,
+      analysisError: null as string|null,
       motivationError: null as string|null,
       gridCollapsed: false,
       gridOriginalState: null as any
     };
   },
+  mounted() {
+    this.fetchAnalysis();
+  },
   methods: {
+    async fetchAnalysis() {
+      this.isLoadingAnalysis = true;
+      this.analysisError = null;
+      
+      const exerciseId = this.$route.params.exerciseId;
+      if (!exerciseId) {
+        this.analysisError = 'Exercise ID is required';
+        this.isLoadingAnalysis = false;
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/analyze?exerciseId=${exerciseId}`, {
+          method: 'GET'
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        this.feedbackData = await response.json();
+      } catch (error) {
+        this.analysisError = error instanceof Error ? error.message : 'Failed to fetch analysis';
+        console.error('Analysis failed:', error);
+      } finally {
+        this.isLoadingAnalysis = false;
+      }
+    },
     handleFileChange(event: Event) {
       const input = event.target as HTMLInputElement;
       this.selectedFile = input.files?.[0] || null;
-    },
-    async handleSubmit() {
-      if (!this.selectedFile) return;
-
-      const formData = new FormData();
-      formData.append('file', this.selectedFile);
-
-      try {
-        const response = await fetch('/api/', {
-          method: 'POST',
-          body: formData
-        });
-        this.feedbackData = await response.json();
-      } catch (error) {
-        console.error('Analysis failed:', error);
-      }
     },
     headerClass(state: string) {
       return {
@@ -206,7 +212,7 @@ export default defineComponent({
         'alert-danger': state === 'FAILED'
       };
     },
-    async fetchMotivation(exerciseId: string) {
+    async fetchMotivation(exerciseId: string, type: string) {
       this.isLoadingMotivation = true;
       this.motivationError = null;
       
@@ -214,7 +220,7 @@ export default defineComponent({
       const timeoutId = setTimeout(() => controller.abort(), 60000);
       
       try {
-        const response = await fetch(`/api/llm-feedback/`, {
+        const response = await fetch(`/api/llm-feedback?exerciseId=${exerciseId}&type=${type}`, {
           method: 'GET',
           signal: controller.signal
         });
@@ -222,7 +228,6 @@ export default defineComponent({
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
         this.motivationData = await response.json();
       } catch (error) {
         this.motivationError = error instanceof Error ? error.message : 'Failed to fetch motivation';

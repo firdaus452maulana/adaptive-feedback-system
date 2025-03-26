@@ -13,7 +13,7 @@ const router = createRouter({
       component: Home
     },
     {
-      path: '/questionnaire/:slug',
+      path: '/questionnaire/:exerciseId',
       name: 'Questionnaire',
       component: Questionnaire,
       props: true
@@ -24,7 +24,7 @@ const router = createRouter({
       component: Results
     },
     {
-      path: '/feedback/:slug',
+      path: '/feedback/:exerciseId',
       name: 'Feedback',
       component: CombinedFeedback,
       props: true

@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router'
 import MultiQuestionnaireForm from '../components/MultiQuestionnaireForm.vue'
 
 const route = useRoute()
-console.log('Questionnaire slug:', route.params.slug)
+console.log('Questionnaire slug:', route.params.exerciseId)
 </script>
 
 <template>
