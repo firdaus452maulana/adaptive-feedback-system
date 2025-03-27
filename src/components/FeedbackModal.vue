@@ -176,9 +176,31 @@ const submitForm = async () => {
       return acc
     }, {} as Record<string, { statement: string, ratings: number | null }>)
 
-    console.log(result)
-    emit('submit-success')
-    handleClose()
+    try {
+      const response = await fetch(`/api/submit-evaluate?exerciseId=${route.params.exerciseId}&type=${route.query.type}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(result, null, 2)
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to submit evaluation')
+      }
+
+      const exerciseId = route.params.exerciseId || ''
+      if (route.query.type === 'performance_personalization') {
+        window.location.href = `/thank-you`
+      } else {
+        window.location.href = `/questionnaire/${exerciseId}`
+      }
+      window.location.href = `/questionnaire/${exerciseId}`
+    } catch (error) {
+      console.error('Error submitting evaluation:', error)
+      emit('submit-success') // Fallback to original behavior on error
+      handleClose()
+    }
   }
 }
 
