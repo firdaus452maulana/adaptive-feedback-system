@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
 import ReviewPage from './ReviewPage.vue'
+
+const route = useRoute()
 
 const questions = [
   {
@@ -55,7 +58,7 @@ const questions = [
     type: 'scale',
     question: 'How difficult is it for you to exercise consistently?',
     min: 1,
-    max: 5,
+    max: 7,
     minLabel: 'Very easy',
     maxLabel: 'Very difficult'
   },
@@ -74,7 +77,7 @@ const questions = [
     type: 'scale',
     question: 'How much do you rely on external motivation from a coach or system?',
     min: 1,
-    max: 5,
+    max: 7,
     minLabel: 'Not at all',
     maxLabel: 'Very much'
   },
@@ -105,7 +108,7 @@ const questions = [
     type: 'scale',
     question: 'Do you feel that the benefits of squat training outweigh the challenges?',
     min: 1,
-    max: 5,
+    max: 7,
     minLabel: 'Not at all',
     maxLabel: 'Very much'
   },
@@ -118,13 +121,14 @@ const questions = [
   {
     type: 'multiple-choice',
     question: 'Do you experience pain or discomfort while performing squats?',
-    options: ['Yes, Please specify:', 'No']
+    options: ['Yes, Please specify', 'No'],
+    hasOther: true
   },
   {
     type: 'scale',
     question: 'How important is it for you to receive safety recommendations during training?',
     min: 1,
-    max: 5,
+    max: 7,
     minLabel: 'Not important',
     maxLabel: 'Very important'
   },
@@ -132,7 +136,7 @@ const questions = [
     type: 'scale',
     question: 'How satisfied are you with your squat training progress so far?',
     min: 1,
-    max: 5,
+    max: 7,
     minLabel: 'Very dissatisfied',
     maxLabel: 'Very satisfied'
   },
@@ -178,7 +182,7 @@ const rules = computed(() => {
     if (q.type === 'multiple-choice' && q.hasOther) {
       rulesObj[key].otherValue = { 
         requiredIfOther: (value: string) => ({
-          $validator: () => formData.value[key]?.value !== 'Other' || !!value?.trim() || formData.value[key]?.value !== 'Yes, Please specify:',
+          $validator: () => formData.value[key]?.value !== 'Other' || !!value?.trim() || formData.value[key]?.value !== 'Yes, Please specify',
           $message: 'Please specify your choice'
         })
       }
@@ -197,7 +201,7 @@ const rules = computed(() => {
     }
     
     if (q.type === 'short-answer') {
-      rulesObj[key].value = { required, minLength: minLength(3) }
+      rulesObj[key].value = { required, minLength: minLength(1) }
     }
   })
   
@@ -294,13 +298,24 @@ const generateJSON = async () => {
       answer: getAnswer(q.type, index)
     }))
     
-    const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'questionnaire-results.json'
-    a.click()
-    URL.revokeObjectURL(url)
+    // Get exerciseId from route params
+    const exerciseId = route.params.exerciseId
+    
+    // Submit to API
+    const response = await fetch(`/api/submit-questionnaire?exerciseId=${exerciseId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({"personalization" : result})
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to submit questionnaire')
+    }
+    
+    // Navigate to feedback page
+    window.location.href = `/feedback/${exerciseId}?type=performance_personalization`
   } finally {
     isLoading.value = false
   }
@@ -312,7 +327,7 @@ const getAnswer = (type: string, index: number) => {
 
   switch (type) {
     case 'multiple-choice':
-      return answer.value === 'Other' ? answer.otherValue : answer.value
+      return answer.value === 'Other' || answer.value === 'Yes, Please specify' ? answer.otherValue : answer.value
     case 'checkbox':
       const answers = [...answer.values]
       if (answers.includes('Other')) {
@@ -379,7 +394,7 @@ const getAnswer = (type: string, index: number) => {
                 <span>{{ option }}</span>
               </div>
             </div>
-            <div v-if="formData[`q${currentStep}`]?.value === 'Other'" class="mt-3">
+            <div v-if="formData[`q${currentStep}`]?.value === 'Other' || formData[`q${currentStep}`]?.value === 'Yes, Please specify'" class="mt-3">
               <input
                 type="text"
                 v-model="formData[`q${currentStep}`].otherValue"
