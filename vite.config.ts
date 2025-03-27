@@ -9,7 +9,7 @@ export default defineConfig({
     port: 2303,
     proxy: {
       '/api': {
-          target: 'http://localhost:8000',
+          target: 'https://api-adaptive.firdausmaulana.com',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, '')
       }
