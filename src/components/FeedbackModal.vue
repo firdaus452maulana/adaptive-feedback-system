@@ -195,7 +195,7 @@ const submitForm = async () => {
       } else {
         window.location.href = `/questionnaire/${exerciseId}`
       }
-      window.location.href = `/questionnaire/${exerciseId}`
+      // window.location.href = `/questionnaire/${exerciseId}`
     } catch (error) {
       console.error('Error submitting evaluation:', error)
       emit('submit-success') // Fallback to original behavior on error
