@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import Questionnaire from '../views/Questionnaire.vue'
 import Results from '../views/Results.vue'
 import CombinedFeedback from '../components/CombinedFeedback.vue'
+import ThankYouPage from '../views/ThankYouPage.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -28,6 +29,11 @@ const router = createRouter({
       name: 'Feedback',
       component: CombinedFeedback,
       props: true
+    },
+    {
+      path: '/thank-you',
+      name: 'ThankYou',
+      component: ThankYouPage
     }
   ]
 })
