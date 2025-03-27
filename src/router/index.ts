@@ -4,6 +4,7 @@ import Questionnaire from '../views/Questionnaire.vue'
 import Results from '../views/Results.vue'
 import CombinedFeedback from '../components/CombinedFeedback.vue'
 import ThankYouPage from '../views/ThankYouPage.vue'
+import Introduction from '../views/Introduction.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -34,6 +35,11 @@ const router = createRouter({
       path: '/thank-you',
       name: 'ThankYou',
       component: ThankYouPage
+    },
+    {
+      path: '/introduction',
+      name: 'Introduction',
+      component: Introduction
     }
   ]
 })
