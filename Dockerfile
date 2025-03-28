@@ -19,7 +19,7 @@ FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 # Copy the nginx configuration file
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-# Expose the port 2303
-EXPOSE 80
+# Expose the port 2302
+EXPOSE 2302
 # Start Nginx to serve the application
 CMD ["nginx", "-g", "daemon off;"]
