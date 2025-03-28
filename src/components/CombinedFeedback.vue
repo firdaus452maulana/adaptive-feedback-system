@@ -24,12 +24,13 @@
             <div class="comparison-row">
               <div class="image-section">
                 <h5>Your Form</h5>
-                <img 
-                  :src="`data:image/jpg;base64, ${feedback.img_64}`" 
+                <img
+                  v-show="feedback.feedback !== -1"
+                  :src="`data:image/jpg;base64, ${feedback.img_64}`"
                   class="form-image"
                   alt="Exercise snapshot"
                 >
-                <div class="feedback-message alert" :class="messageClass(item.state)">
+                <div class="feedback-message alert" :class="[messageClass(item.state), { 'text-center': feedback.feedback === -1 }]">
                   {{ feedback.feedback_desc }}
                 </div>
               </div>
@@ -97,8 +98,9 @@
           class="cta-button"
           @click="showModal = true"
           aria-label="Provide additional feedback"
+          :disabled="!motivationData || isLoadingMotivation"
         >
-          Share Your Experience
+          Give Me Your Evaluation
         </button>
       </div>
     </div>
@@ -342,6 +344,10 @@ export default defineComponent({
   padding: 1rem;
   border-radius: 6px;
   margin-bottom: 1rem;
+  
+  &.text-center {
+    text-align: center;
+  }
 }
 
 .instruction-text {
@@ -393,9 +399,6 @@ export default defineComponent({
   100% { opacity: 0.6; }
 }
 
-.loading-overlay .spinner-border {
-  animation: pulse 1.5s infinite;
-}
 
 @media (max-width: 768px) {
   .comparison-row {
@@ -470,6 +473,14 @@ export default defineComponent({
     
     &:active {
       transform: translateY(0);
+    }
+
+    &:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      opacity: 0.7;
+      box-shadow: none;
+      transform: none;
     }
   }
 }

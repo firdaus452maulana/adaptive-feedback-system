@@ -233,11 +233,11 @@ const handleKeydown = (event: KeyboardEvent) => {
     >
       <div class="modal-container">
         <div class="modal-header">
-          <h2>Feedback Form</h2>
+          <h2>Evaluation Form</h2>
           <button 
             class="close-button"
             @click="handleClose"
-            aria-label="Close feedback form"
+            aria-label="Close evaluation form"
           >
             &times;
           </button>
@@ -295,7 +295,7 @@ const handleKeydown = (event: KeyboardEvent) => {
             :disabled="!isValid"
             aria-label="Submit feedback"
           >
-            Submit Feedback
+            Submit Evaluation
           </button>
         </div>
       </div>
