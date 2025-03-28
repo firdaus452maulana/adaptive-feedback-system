@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     cors: false,
-    port: 2303,
+    port: 4303,
     proxy: {
       '/api': {
           target: 'https://api-adaptive.firdausmaulana.com',

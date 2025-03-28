@@ -1,17 +1,17 @@
-version: '3.8'
+# version: '3.8'
 
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: vue-app
-    ports:
-      - 2303:2302
-  nginx:
-    image: nginx:alpine
-    container_name: nginx-app
-    ports:
-      - 2302:2302
-    depends_on:
-      - app
+# services:
+#   app:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     container_name: vue-app
+#     ports:
+#       - 2303:2302
+#   nginx:
+#     image: nginx:alpine
+#     container_name: nginx-app
+#     ports:
+#       - 2302:2302
+#     depends_on:
+#       - app
