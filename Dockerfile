@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 # Install the project dependencies
 RUN npm install
-RUN npm i -g serve
+# RUN npm i -g serve
 # Copy the rest of the project files to the container
 COPY . .
 # Build the Vue.js application to the production mode to dist folder
@@ -15,7 +15,7 @@ RUN npm run build
 
 EXPOSE 4303
 
-CMD [ "serve", "-s", "dist" ]
+CMD [ "npm", "run", "dev" ]
 
 # production stage
 # Use the lightweight Nginx image from the previous stage for the nginx container
