@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength } from '@vuelidate/validators'
 import ReviewPage from './ReviewPage.vue'
+
+const showInstructions = ref(true)
 
 const route = useRoute()
 
@@ -347,6 +349,35 @@ const getAnswer = (type: string, index: number) => {
 </script>
 
 <template>
+  <button
+    @click="showInstructions = true"
+    class="instructions-btn"
+  >
+    <i class="fas fa-info-circle"></i> Questionnaire Instructions
+  </button>
+
+  <div v-if="showInstructions" class="modal-overlay" @click.self="showInstructions = false">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Questionnaire Instructions</h3>
+        <button @click="showInstructions = false" class="close-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>This questionnaire will help us understand your fitness profile to provide more personalized feedback.</p>
+        <p>Please answer each question honestly and to the best of your ability.</p>
+        <p>Your responses will help us tailor exercise recommendations specifically for you.</p>
+        <p class="research-note">Note: This data will only be used for research purposes to improve our training recommendations.</p>
+      </div>
+      <div class="modal-footer">
+        <button @click="showInstructions = false" class="btn btn-primary">
+          Got it!
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="questionnaire-form">
     <div class="progress-container">
       <div class="progress">
@@ -524,6 +555,95 @@ const getAnswer = (type: string, index: number) => {
 
 <style lang="scss" scoped>
 @use "sass:color";
+
+.instructions-btn {
+  display: block;
+  margin: 0 auto 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #F0A04B;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: darken(#F0A04B, 10%);
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  
+  h3 {
+    color: #333;
+    margin: 0;
+  }
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #666;
+  
+  &:hover {
+    color: #333;
+  }
+}
+
+.modal-body {
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: #555;
+    
+    &:last-child {
+      margin-bottom: 0;
+      font-style: italic;
+      color: #777;
+    }
+    
+    &.research-note {
+      font-size: 0.9rem;
+      color: #666;
+      border-top: 1px solid #eee;
+      padding-top: 0.5rem;
+      margin-top: 1rem;
+    }
+  }
+}
+
+.modal-footer {
+  margin-top: 1.5rem;
+  text-align: right;
+}
 .questionnaire-form {
   max-width: 800px;
   margin: 0 auto;

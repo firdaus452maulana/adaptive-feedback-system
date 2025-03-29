@@ -94,20 +94,34 @@
       
       <!-- Feedback Questionnaire CTA -->
       <div class="questionnaire-cta">
-        <button
-          class="cta-button"
-          @click="showModal = true"
-          aria-label="Provide additional feedback"
-          :disabled="!motivationData || isLoadingMotivation"
-        >
-          Give Me Your Evaluation
-        </button>
+        <div class="cta-buttons">
+          <button
+            class="cta-button secondary"
+            @click="showInstructionsModal = true"
+            aria-label="Show instructions"
+          >
+            Show Instructions
+          </button>
+          <button
+            class="cta-button primary"
+            @click="showModal = true"
+            aria-label="Provide additional feedback"
+            :disabled="!motivationData || isLoadingMotivation"
+          >
+            Give Me Your Evaluation
+          </button>
+        </div>
       </div>
     </div>
 
     <FeedbackModal
       v-model:show="showModal"
       @submit-success="submissionComplete = true"
+    />
+
+    <FeedbackInstructionsModal
+      :show="showInstructionsModal"
+      @close="showInstructionsModal = false"
     />
 
     <Transition name="toast">
@@ -125,16 +139,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import FeedbackModal from './FeedbackModal.vue'
+import FeedbackInstructionsModal from './FeedbackInstructionsModal.vue'
 
 const route = useRoute()
 console.log('Feedback slug:', route.params.exerciseId)
 console.log('Feedback slug:', route.query.type)
 
 const showModal = ref(false)
+const showInstructionsModal = ref(false)
 const submissionComplete = ref(false)
+const instructionsSeen = ref(false)
+
+onMounted(() => {
+  if (!instructionsSeen.value) {
+    showInstructionsModal.value = true
+    instructionsSeen.value = true
+  }
+})
 </script>
 
 <script lang="ts">
@@ -454,9 +478,14 @@ export default defineComponent({
   text-align: center;
   margin: 3rem 0;
   
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
   .cta-button {
-    background-color: #F0A04B;
-    color: white;
     padding: 1rem 2rem;
     border: none;
     border-radius: 2rem;
@@ -465,10 +494,26 @@ export default defineComponent({
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-      background-color: #e0903b;
+    &.primary {
+      background-color: #F0A04B;
+      color: white;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        background-color: #e0903b;
+      }
+    }
+    
+    &.secondary {
+      background-color: #B1C29E;
+      color: white;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        background-color: #9aae85;
+      }
     }
     
     &:active {
