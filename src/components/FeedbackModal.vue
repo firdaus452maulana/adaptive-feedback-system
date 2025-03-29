@@ -191,7 +191,7 @@ const submitForm = async () => {
 
       const exerciseId = route.params.exerciseId || ''
       if (route.query.type === 'performance_personalization') {
-        window.location.href = `/thank-you`
+        window.location.href = `/thank-you?exerciseId=${exerciseId}`
       } else {
         window.location.href = `/questionnaire/${exerciseId}`
       }

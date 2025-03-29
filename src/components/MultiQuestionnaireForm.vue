@@ -337,7 +337,7 @@ const getAnswer = (type: string, index: number) => {
       return answers
     case 'scale':
       const question = questions[index]
-      return `${answer.value}/${question.max}`
+      return `${answer.value}/${question.max} (${question.minLabel}=${question.min}, ${question.maxLabel}=${question.max})`
     case 'short-answer':
       return answer.value
     default:
