@@ -69,25 +69,82 @@
         <div v-if="motivationError" class="error-message alert alert-danger">
           {{ motivationError }}
         </div>
-        <div class="feedback-card" style="background: #B5D8F7">
-          <h4 class="card-title">Feedback</h4>
-          <p class="card-text">{{ motivationData?.performance_feedback }}</p>
-        </div>
-        
-        <div class="feedback-card" style="background: #FFD9B3">
-          <h4 class="card-title">Motivation</h4>
-          <p class="card-text">{{ motivationData?.motivation }}</p>
-        </div>
-        
-        <div class="feedback-card" style="background: #FFB3B3">
-          <h4 class="card-title">Safety Notes ❗</h4>
-          <p class="card-text">{{ motivationData?.safety }}</p>
-        </div>
-        
-        <div class="feedback-card" style="background: #B3D9B3">
-          <h4 class="card-title">Suggestion</h4>
-          <p class="card-text">{{ motivationData?.suggestion }}</p>
-        </div>
+        <template v-if="$route.query.type === 'performance_personalization'">
+          <div class="feedback-section">
+            <h3 class="section-title">Message based on Performance Data</h3>
+            <div class="cards-grid">
+              <div class="feedback-card" style="background: #B5D8F7">
+                <h4 class="card-title">Feedback</h4>
+                <p class="card-text">{{ performanceFeedbackData?.performance_feedback }}</p>
+              </div>
+              
+              <div class="feedback-card" style="background: #FFD9B3">
+                <h4 class="card-title">Motivation</h4>
+                <p class="card-text">{{ performanceFeedbackData?.motivation }}</p>
+              </div>
+              
+              <div class="feedback-card" style="background: #FFB3B3">
+                <h4 class="card-title">Safety Notes ❗</h4>
+                <p class="card-text">{{ performanceFeedbackData?.safety }}</p>
+              </div>
+              
+              <div class="feedback-card" style="background: #B3D9B3">
+                <h4 class="card-title">Suggestion</h4>
+                <p class="card-text">{{ performanceFeedbackData?.suggestion }}</p>
+              </div>
+            </div>
+          </div>
+
+          <hr class="section-divider">
+
+          <div class="feedback-section">
+            <h3 class="section-title">Message based on Performance Data and Personalization Data</h3>
+            <div class="cards-grid">
+              <div class="feedback-card" style="background: #B5D8F7">
+                <h4 class="card-title">Feedback</h4>
+                <p class="card-text">{{ motivationData?.performance_feedback }}</p>
+              </div>
+              
+              <div class="feedback-card" style="background: #FFD9B3">
+                <h4 class="card-title">Motivation</h4>
+                <p class="card-text">{{ motivationData?.motivation }}</p>
+              </div>
+              
+              <div class="feedback-card" style="background: #FFB3B3">
+                <h4 class="card-title">Safety Notes ❗</h4>
+                <p class="card-text">{{ motivationData?.safety }}</p>
+              </div>
+              
+              <div class="feedback-card" style="background: #B3D9B3">
+                <h4 class="card-title">Suggestion</h4>
+                <p class="card-text">{{ motivationData?.suggestion }}</p>
+              </div>
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="cards-grid">
+            <div class="feedback-card" style="background: #B5D8F7">
+              <h4 class="card-title">Feedback</h4>
+              <p class="card-text">{{ motivationData?.performance_feedback }}</p>
+            </div>
+            
+            <div class="feedback-card" style="background: #FFD9B3">
+              <h4 class="card-title">Motivation</h4>
+              <p class="card-text">{{ motivationData?.motivation }}</p>
+            </div>
+            
+            <div class="feedback-card" style="background: #FFB3B3">
+              <h4 class="card-title">Safety Notes ❗</h4>
+              <p class="card-text">{{ motivationData?.safety }}</p>
+            </div>
+            
+            <div class="feedback-card" style="background: #B3D9B3">
+              <h4 class="card-title">Suggestion</h4>
+              <p class="card-text">{{ motivationData?.suggestion }}</p>
+            </div>
+          </div>
+        </template>
       </div>
       
       <hr class="section-divider">
@@ -110,6 +167,9 @@
           >
             Give Me Your Evaluation
           </button>
+          <div v-if="$route.query.type === 'performance_personalization'" class="personalization-note alert alert-info">
+            This evaluation is different from the previous one because the four messages here have been added with personalized data specifically for you.
+          </div>
         </div>
       </div>
     </div>
@@ -145,8 +205,11 @@ import FeedbackModal from './FeedbackModal.vue'
 import FeedbackInstructionsModal from './FeedbackInstructionsModal.vue'
 
 const route = useRoute()
-console.log('Feedback slug:', route.params.exerciseId)
-console.log('Feedback slug:', route.query.type)
+const exerciseId = typeof route.params.exerciseId === 'string' ? route.params.exerciseId : route.params.exerciseId[0]
+const feedbackType = typeof route.query.type === 'string' ? route.query.type : ''
+
+console.log('Feedback slug:', exerciseId)
+console.log('Feedback type:', feedbackType)
 
 const showModal = ref(false)
 const showInstructionsModal = ref(false)
@@ -169,8 +232,12 @@ export default defineComponent({
   watch: {
     feedbackData(newVal) {
       if (newVal && newVal.length > 0) {
-        const exerciseId = this.$route.params.exerciseId;
-        const type = this.$route.query.type;
+        const exerciseId = typeof this.$route.params.exerciseId === 'string'
+          ? this.$route.params.exerciseId
+          : this.$route.params.exerciseId[0];
+        const type = typeof this.$route.query.type === 'string'
+          ? this.$route.query.type
+          : '';
         this.fetchMotivation(exerciseId, type);
       }
     }
@@ -180,12 +247,16 @@ export default defineComponent({
       selectedFile: null as File|null,
       feedbackData: null as any,
       motivationData: null as any,
+      performanceFeedbackData: null as any,
       isLoadingAnalysis: false,
       isLoadingMotivation: false,
       analysisError: null as string|null,
       motivationError: null as string|null,
       gridCollapsed: false,
-      gridOriginalState: null as any
+      gridOriginalState: null as string|null,
+      $refs: {
+        feedbackGrid: null as HTMLElement|null
+      }
     };
   },
   mounted() {
@@ -246,15 +317,40 @@ export default defineComponent({
       const timeoutId = setTimeout(() => controller.abort(), 60000);
       
       try {
-        const response = await fetch(`/api/llm-feedback?exerciseId=${exerciseId}&type=${type}`, {
-          method: 'GET',
-          signal: controller.signal
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (type === 'performance_personalization') {
+          // Fetch performance feedback first
+          const perfResponse = await fetch(`/api/llm-feedback?exerciseId=${exerciseId}&type=performance`, {
+            method: 'GET',
+            signal: controller.signal
+          });
+          
+          if (!perfResponse.ok) {
+            throw new Error(`HTTP error! status: ${perfResponse.status}`);
+          }
+          this.performanceFeedbackData = await perfResponse.json();
+
+          // Then fetch personalized feedback
+          const personalResponse = await fetch(`/api/llm-feedback?exerciseId=${exerciseId}&type=${type}`, {
+            method: 'GET',
+            signal: controller.signal
+          });
+          
+          if (!personalResponse.ok) {
+            throw new Error(`HTTP error! status: ${personalResponse.status}`);
+          }
+          this.motivationData = await personalResponse.json();
+        } else {
+          // Original behavior for other types
+          const response = await fetch(`/api/llm-feedback?exerciseId=${exerciseId}&type=${type}`, {
+            method: 'GET',
+            signal: controller.signal
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          this.motivationData = await response.json();
         }
-        this.motivationData = await response.json();
       } catch (error) {
         this.motivationError = error instanceof Error ? error.message : 'Failed to fetch motivation';
         this.triggerGridCollapse();
@@ -265,7 +361,7 @@ export default defineComponent({
     },
     triggerGridCollapse() {
       // Store current grid state
-      this.gridOriginalState = this.$refs.feedbackGrid?.innerHTML;
+      this.gridOriginalState = this.$refs.feedbackGrid?.innerHTML ?? null;
       this.gridCollapsed = true;
       
       // Rehydrate after animation if needed
@@ -432,10 +528,20 @@ export default defineComponent({
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   margin-bottom: 2rem;
   padding: 16px;
+}
+
+.feedback-section .cards-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 768px) {
+  .feedback-section .cards-grid,
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .feedback-card {
@@ -472,6 +578,19 @@ export default defineComponent({
   height: 2px;
   background: #000000;
   margin: 2rem 0;
+  width: 100%;
+}
+
+.feedback-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-family: sans-serif;
+  font-size: 18pt;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
 }
 
 .questionnaire-cta {
