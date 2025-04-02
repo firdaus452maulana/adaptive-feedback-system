@@ -11,7 +11,18 @@ const props = defineProps<{
 const emit = defineEmits(['update:show', 'submit-success'])
 
 const formData = ref({
-  ratings: {} as Record<string, number | null>,
+  ratings: {
+    performance_data_relevance: 1,
+    message_clarity: 1,
+    emotional_impact: 1,
+    actionability: 1,
+    overall_satisfaction: 1,
+    integrated_relevance: 1,
+    personalization_quality: 1,
+    integration_clarity: 1,
+    emotional_impact_and_motivation: 1,
+    actionability_and_recommendations: 1
+  } as Record<string, number>,
   comment: ''
 })
 
