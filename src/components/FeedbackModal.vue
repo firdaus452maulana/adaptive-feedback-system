@@ -204,7 +204,17 @@ const submitForm = async () => {
       if (route.query.type === 'performance_personalization') {
         window.location.href = `/thank-you?exerciseId=${exerciseId}`
       } else {
-        window.location.href = `/questionnaire/${exerciseId}`
+        try {
+          const response = await fetch(`/api/get-personalization?exerciseId=${exerciseId}`)
+          if (response.status !== 404) {
+            window.location.href = `/feedback/${exerciseId}?type=performance_personalization`
+          } else {
+            window.location.href = `/questionnaire/${exerciseId}`
+          }
+        } catch (error) {
+          // Fallback to questionnaire if API call fails
+          window.location.href = `/questionnaire/${exerciseId}`
+        }
       }
       // window.location.href = `/questionnaire/${exerciseId}`
     } catch (error) {
